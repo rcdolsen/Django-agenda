@@ -24,7 +24,7 @@ class Category(models.Model):
 
 class Contact(models.Model):
     # blank=True serve para o campo nao ser obrigatorio
-    first_name = models.CharField(max_length=50)
+    first_name = models.CharField(max_length=50, verbose_name='first name')
     last_name = models.CharField(max_length=80, blank=True)
     phone = models.CharField(max_length=20)
     email = models.EmailField(max_length=254, blank=True)

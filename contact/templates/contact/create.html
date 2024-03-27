@@ -7,7 +7,7 @@
     <h2>Contact</h2>
 
     <form 
-      action="{% url "contact:create" %}"
+      action="{{ form_action}}"
       {% comment %} permite dados sensiveis, necessarios usar mecanismos de seguranca {% endcomment %}
       method="POST"
       {% comment %} requerido para formularios em que se envia arquivos {% endcomment %}
@@ -16,16 +16,55 @@
 
     {% csrf_token %}
 
+    {% comment %} formulario predifinido {% endcomment %}
+
+      {% comment %} os 3 jeitos sao usados
+    <table> 
+      {{ form }}
+    </table>
+    usando .as nao precisa de table
+    {{ form.as_table }}
+    {{ form.as_p }} {% endcomment %}
+
+    {% comment %} fazendo o formulario {% endcomment %}
+
       <div class="form-content">
-        <div class="form-group">
-          <label for="id_first_name">LABEL</label>
-          <input
-          type="text" 
-          name="first_name" 
-          maxlength="255" 
-          id="id_first_name">
-        </div>
+        {% for field in form %}
+          <div class="form-group">
+    {% comment %} id_for_label vai selecionar o field do for dinamicamente {% endcomment %}
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {% comment %} <input
+            type="text" 
+            name="first_name" 
+            maxlength="255" 
+            id="id_first_name"> {% endcomment %}
+
+            {% comment %} funciona como um input dinamico {% endcomment %}
+            {{ field }}
+            {{ field.errors }}
+
+            {% if field.help_text %}
+              <p class="help-text">{{ field.help_text }}</p>
+            {% endif %}
+          </div>
+
+          {% if field.name == 'picture' and field.value.url %}
+            <div class="form-group">
+              <img src="{{ field.value.url }}" alt="">
+            </div>
+          {% endif %}
+        {% endfor %}
       </div>
+
+      {% if form.non_field_errors %}
+        <div class="form-content">
+          <div class="form-group">
+            <div class="message error">
+            {{ form.non_field_errors }}
+            </div>
+          </div>
+        </div>
+      {% endif %}
 
       <div class="form-content">
         <div class="form-group">
